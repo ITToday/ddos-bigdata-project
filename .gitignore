@@ -28,3 +28,4 @@ dashboard_data.json
 
 # VS Code settings (optional — some prefer to commit these)
 .vscode/
+.env
