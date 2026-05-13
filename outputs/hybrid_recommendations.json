@@ -1,0 +1,546 @@
+{
+  "Attack-Killall-v2": [
+    {
+      "attack_type": "Attack-TCP-Control",
+      "hybrid_score": 0.9639,
+      "cf_score": 0.9399,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-Valid-SYN",
+      "hybrid_score": 0.9547,
+      "cf_score": 0.9918,
+      "content_score": 0.899
+    },
+    {
+      "attack_type": "Attack-TCP-IGMP",
+      "hybrid_score": 0.8754,
+      "cf_score": 1.0,
+      "content_score": 0.6885
+    },
+    {
+      "attack_type": "Attack-TCP-SYN",
+      "hybrid_score": 0.8646,
+      "cf_score": 0.9707,
+      "content_score": 0.7054
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-MIX",
+      "hybrid_score": 0.8329,
+      "cf_score": 0.8981,
+      "content_score": 0.735
+    }
+  ],
+  "Attack-Killer-TCP": [
+    {
+      "attack_type": "Attack-TCP-Flag-SYN-ACK",
+      "hybrid_score": 0.9957,
+      "cf_score": 0.9928,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN",
+      "hybrid_score": 0.9493,
+      "cf_score": 0.98,
+      "content_score": 0.9033
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-ACK-PSH",
+      "hybrid_score": 0.9423,
+      "cf_score": 1.0,
+      "content_score": 0.8556
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-ACK",
+      "hybrid_score": 0.9287,
+      "cf_score": 0.9684,
+      "content_score": 0.869
+    },
+    {
+      "attack_type": "Attack-TCP-SYN",
+      "hybrid_score": 0.9213,
+      "cf_score": 0.9826,
+      "content_score": 0.8295
+    }
+  ],
+  "Attack-TCP-BYPass-V1": [
+    {
+      "attack_type": "Attack-TCP-Flag-MIX",
+      "hybrid_score": 0.6868,
+      "cf_score": 0.6119,
+      "content_score": 0.799
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-ACK-PSH",
+      "hybrid_score": 0.6502,
+      "cf_score": 0.433,
+      "content_score": 0.9761
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN-TFO",
+      "hybrid_score": 0.6489,
+      "cf_score": 0.9236,
+      "content_score": 0.2369
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-RST-ACK",
+      "hybrid_score": 0.6406,
+      "cf_score": 0.9865,
+      "content_score": 0.1218
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN-ACK",
+      "hybrid_score": 0.6143,
+      "cf_score": 0.4917,
+      "content_score": 0.7982
+    }
+  ],
+  "Attack-TCP-Control": [
+    {
+      "attack_type": "Attack-Killall-v2",
+      "hybrid_score": 0.9477,
+      "cf_score": 0.9128,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-IGMP",
+      "hybrid_score": 0.7982,
+      "cf_score": 0.9404,
+      "content_score": 0.585
+    },
+    {
+      "attack_type": "Attack-TCP-SYN",
+      "hybrid_score": 0.7613,
+      "cf_score": 0.9877,
+      "content_score": 0.4216
+    },
+    {
+      "attack_type": "Attack-TCP-Valid-SYN",
+      "hybrid_score": 0.7406,
+      "cf_score": 0.9323,
+      "content_score": 0.4531
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-MIX",
+      "hybrid_score": 0.7232,
+      "cf_score": 0.9815,
+      "content_score": 0.3358
+    }
+  ],
+  "Attack-TCP-Flag-ACK": [
+    {
+      "attack_type": "Attack-TCP-Flag-SYN",
+      "hybrid_score": 0.9976,
+      "cf_score": 0.996,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-SYN",
+      "hybrid_score": 0.9882,
+      "cf_score": 0.9969,
+      "content_score": 0.9751
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-ACK-PSH",
+      "hybrid_score": 0.9859,
+      "cf_score": 0.977,
+      "content_score": 0.9992
+    },
+    {
+      "attack_type": "Attack-TCP-IGMP",
+      "hybrid_score": 0.9653,
+      "cf_score": 0.9888,
+      "content_score": 0.9301
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN-ACK",
+      "hybrid_score": 0.9593,
+      "cf_score": 0.9726,
+      "content_score": 0.9393
+    }
+  ],
+  "Attack-TCP-Flag-ACK-PSH": [
+    {
+      "attack_type": "Attack-TCP-Flag-SYN",
+      "hybrid_score": 0.9859,
+      "cf_score": 0.9788,
+      "content_score": 0.9965
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-ACK",
+      "hybrid_score": 0.9809,
+      "cf_score": 0.9682,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-SYN",
+      "hybrid_score": 0.9795,
+      "cf_score": 0.9816,
+      "content_score": 0.9762
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN-ACK",
+      "hybrid_score": 0.963,
+      "cf_score": 0.9901,
+      "content_score": 0.9225
+    },
+    {
+      "attack_type": "Attack-TCP-IGMP",
+      "hybrid_score": 0.9416,
+      "cf_score": 0.9407,
+      "content_score": 0.9429
+    }
+  ],
+  "Attack-TCP-Flag-MIX": [
+    {
+      "attack_type": "Attack-TCP-SYN",
+      "hybrid_score": 0.9732,
+      "cf_score": 0.9553,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN-ACK",
+      "hybrid_score": 0.9572,
+      "cf_score": 1.0,
+      "content_score": 0.893
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-ACK-PSH",
+      "hybrid_score": 0.9566,
+      "cf_score": 0.9763,
+      "content_score": 0.927
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN",
+      "hybrid_score": 0.9454,
+      "cf_score": 0.9561,
+      "content_score": 0.9295
+    },
+    {
+      "attack_type": "Attack-TCP-Valid-SYN",
+      "hybrid_score": 0.9319,
+      "cf_score": 0.8974,
+      "content_score": 0.9837
+    }
+  ],
+  "Attack-TCP-Flag-OSYN": [
+    {
+      "attack_type": "Attack-TCP-Flag-SYN-TFO",
+      "hybrid_score": 0.9878,
+      "cf_score": 1.0,
+      "content_score": 0.9694
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-OSYNP",
+      "hybrid_score": 0.9618,
+      "cf_score": 0.9675,
+      "content_score": 0.9531
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-RST-ACK",
+      "hybrid_score": 0.9496,
+      "cf_score": 0.916,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN-TIME",
+      "hybrid_score": 0.8708,
+      "cf_score": 0.9774,
+      "content_score": 0.7108
+    },
+    {
+      "attack_type": "Attack-TCP-BYPass-V1",
+      "hybrid_score": 0.5737,
+      "cf_score": 0.7807,
+      "content_score": 0.2631
+    }
+  ],
+  "Attack-TCP-Flag-OSYNP": [
+    {
+      "attack_type": "Attack-TCP-Flag-RST-ACK",
+      "hybrid_score": 0.999,
+      "cf_score": 1.0,
+      "content_score": 0.9976
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-OSYN",
+      "hybrid_score": 0.9943,
+      "cf_score": 0.9905,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN-TFO",
+      "hybrid_score": 0.9694,
+      "cf_score": 0.9992,
+      "content_score": 0.9247
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN-TIME",
+      "hybrid_score": 0.8048,
+      "cf_score": 0.8956,
+      "content_score": 0.6687
+    },
+    {
+      "attack_type": "Attack-TCP-BYPass-V1",
+      "hybrid_score": 0.618,
+      "cf_score": 0.9023,
+      "content_score": 0.1916
+    }
+  ],
+  "Attack-TCP-Flag-RST-ACK": [
+    {
+      "attack_type": "Attack-TCP-Flag-OSYNP",
+      "hybrid_score": 0.9802,
+      "cf_score": 1.0,
+      "content_score": 0.9505
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-OSYN",
+      "hybrid_score": 0.9502,
+      "cf_score": 0.917,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN-TFO",
+      "hybrid_score": 0.9447,
+      "cf_score": 0.9257,
+      "content_score": 0.9732
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN-TIME",
+      "hybrid_score": 0.7009,
+      "cf_score": 0.7152,
+      "content_score": 0.6794
+    },
+    {
+      "attack_type": "Attack-TCP-BYPass-V1",
+      "hybrid_score": 0.6239,
+      "cf_score": 0.8537,
+      "content_score": 0.2793
+    }
+  ],
+  "Attack-TCP-Flag-SYN": [
+    {
+      "attack_type": "Attack-TCP-Flag-ACK",
+      "hybrid_score": 0.996,
+      "cf_score": 0.9933,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-SYN",
+      "hybrid_score": 0.988,
+      "cf_score": 1.0,
+      "content_score": 0.97
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-ACK-PSH",
+      "hybrid_score": 0.9873,
+      "cf_score": 0.9816,
+      "content_score": 0.9957
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN-ACK",
+      "hybrid_score": 0.9726,
+      "cf_score": 0.9827,
+      "content_score": 0.9575
+    },
+    {
+      "attack_type": "Attack-TCP-IGMP",
+      "hybrid_score": 0.9532,
+      "cf_score": 0.9704,
+      "content_score": 0.9274
+    }
+  ],
+  "Attack-TCP-Flag-SYN-ACK": [
+    {
+      "attack_type": "Attack-Killer-TCP",
+      "hybrid_score": 0.997,
+      "cf_score": 1.0,
+      "content_score": 0.9924
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN",
+      "hybrid_score": 0.9915,
+      "cf_score": 0.9859,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-ACK-PSH",
+      "hybrid_score": 0.9837,
+      "cf_score": 0.9968,
+      "content_score": 0.9639
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-ACK",
+      "hybrid_score": 0.9728,
+      "cf_score": 0.9669,
+      "content_score": 0.9815
+    },
+    {
+      "attack_type": "Attack-TCP-SYN",
+      "hybrid_score": 0.9671,
+      "cf_score": 0.9872,
+      "content_score": 0.9369
+    }
+  ],
+  "Attack-TCP-Flag-SYN-TFO": [
+    {
+      "attack_type": "Attack-TCP-Flag-OSYN",
+      "hybrid_score": 0.9983,
+      "cf_score": 1.0,
+      "content_score": 0.9957
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-RST-ACK",
+      "hybrid_score": 0.9473,
+      "cf_score": 0.9121,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-OSYNP",
+      "hybrid_score": 0.9455,
+      "cf_score": 0.9725,
+      "content_score": 0.9052
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN-TIME",
+      "hybrid_score": 0.8849,
+      "cf_score": 0.9503,
+      "content_score": 0.7868
+    },
+    {
+      "attack_type": "Attack-TCP-BYPass-V1",
+      "hybrid_score": 0.5982,
+      "cf_score": 0.7728,
+      "content_score": 0.3363
+    }
+  ],
+  "Attack-TCP-Flag-SYN-TIME": [
+    {
+      "attack_type": "Attack-TCP-Flag-SYN-TFO",
+      "hybrid_score": 0.9889,
+      "cf_score": 0.9814,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-OSYN",
+      "hybrid_score": 0.9654,
+      "cf_score": 1.0,
+      "content_score": 0.9135
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-OSYNP",
+      "hybrid_score": 0.8806,
+      "cf_score": 0.914,
+      "content_score": 0.8306
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-RST-ACK",
+      "hybrid_score": 0.8405,
+      "cf_score": 0.8185,
+      "content_score": 0.8736
+    },
+    {
+      "attack_type": "Attack-TCP-BYPass-V1",
+      "hybrid_score": 0.5414,
+      "cf_score": 0.7139,
+      "content_score": 0.2827
+    }
+  ],
+  "Attack-TCP-IGMP": [
+    {
+      "attack_type": "Attack-TCP-Flag-ACK",
+      "hybrid_score": 0.9948,
+      "cf_score": 1.0,
+      "content_score": 0.987
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN",
+      "hybrid_score": 0.9861,
+      "cf_score": 0.9875,
+      "content_score": 0.984
+    },
+    {
+      "attack_type": "Attack-TCP-SYN",
+      "hybrid_score": 0.9853,
+      "cf_score": 0.9864,
+      "content_score": 0.9837
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-ACK-PSH",
+      "hybrid_score": 0.9807,
+      "cf_score": 0.9678,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-Valid-SYN",
+      "hybrid_score": 0.935,
+      "cf_score": 0.9964,
+      "content_score": 0.8431
+    }
+  ],
+  "Attack-TCP-SYN": [
+    {
+      "attack_type": "Attack-TCP-Flag-SYN",
+      "hybrid_score": 0.9978,
+      "cf_score": 1.0,
+      "content_score": 0.9946
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-ACK",
+      "hybrid_score": 0.9965,
+      "cf_score": 0.9944,
+      "content_score": 0.9996
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-ACK-PSH",
+      "hybrid_score": 0.9908,
+      "cf_score": 0.9846,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-Valid-SYN",
+      "hybrid_score": 0.97,
+      "cf_score": 0.9885,
+      "content_score": 0.9422
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-MIX",
+      "hybrid_score": 0.9673,
+      "cf_score": 0.9616,
+      "content_score": 0.9759
+    }
+  ],
+  "Attack-TCP-Valid-SYN": [
+    {
+      "attack_type": "Attack-TCP-SYN",
+      "hybrid_score": 0.9877,
+      "cf_score": 0.9919,
+      "content_score": 0.9815
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-MIX",
+      "hybrid_score": 0.9604,
+      "cf_score": 0.934,
+      "content_score": 1.0
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-ACK",
+      "hybrid_score": 0.9569,
+      "cf_score": 1.0,
+      "content_score": 0.8923
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-ACK-PSH",
+      "hybrid_score": 0.945,
+      "cf_score": 0.9783,
+      "content_score": 0.895
+    },
+    {
+      "attack_type": "Attack-TCP-Flag-SYN",
+      "hybrid_score": 0.9398,
+      "cf_score": 0.988,
+      "content_score": 0.8676
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "Attack-TCP-BYPass-V1": [
+    {
+      "rank": 1,
+      "attack_type": "Attack-TCP-Flag-SYN-ACK",
+      "justification": "This attack type closely aligns with the observed SYN flag count and is operationally plausible given the packet rate."
+    },
+    {
+      "rank": 2,
+      "attack_type": "Attack-TCP-Flag-ACK-PSH",
+      "justification": "The presence of ACK flags in the observed traffic suggests this attack type could exploit similar patterns."
+    },
+    {
+      "rank": 3,
+      "attack_type": "Attack-TCP-Flag-RST-ACK",
+      "justification": "RST flags may be relevant due to the observed ACK patterns, indicating potential for connection resets."
+    },
+    {
+      "rank": 4,
+      "attack_type": "Attack-TCP-Flag-MIX",
+      "justification": "This attack type could incorporate various flags, but its relevance is lower due to less specific alignment with the observed traffic."
+    },
+    {
+      "rank": 5,
+      "attack_type": "Attack-TCP-Flag-SYN-TFO",
+      "justification": "While SYN flags are present, the low SYN count suggests this attack type is less relevant compared to others."
+    }
+  ],
+  "Attack-TCP-Flag-SYN": [
+    {
+      "rank": 1,
+      "attack_type": "Attack-TCP-Flag-SYN",
+      "justification": "This attack type directly matches the observed attack profile, indicating a high relevance for defense preparations."
+    },
+    {
+      "rank": 2,
+      "attack_type": "Attack-TCP-Flag-ACK",
+      "justification": "The presence of ACK flags in the observed traffic suggests that this attack type could also be operationally plausible."
+    },
+    {
+      "rank": 3,
+      "attack_type": "Attack-TCP-Flag-SYN-ACK",
+      "justification": "This attack type combines SYN and ACK flags, making it relevant given the observed SYN and ACK patterns."
+    },
+    {
+      "rank": 4,
+      "attack_type": "Attack-TCP-Flag-ACK-PSH",
+      "justification": "While less directly related, the ACK and PSH flags may still be relevant due to their presence in the traffic profile."
+    },
+    {
+      "rank": 5,
+      "attack_type": "Attack-TCP-IGMP",
+      "justification": "This attack type is the least relevant as it does not align with the observed TCP flag patterns and flow characteristics."
+    }
+  ],
+  "Attack-TCP-Flag-OSYN": [
+    {
+      "rank": 1,
+      "attack_type": "Attack-TCP-Flag-SYN-TFO",
+      "justification": "This attack type closely resembles the observed SYN flag patterns and high packet rate, making it highly relevant."
+    },
+    {
+      "rank": 2,
+      "attack_type": "Attack-TCP-Flag-OSYNP",
+      "justification": "Similar to the observed attack, this type also involves SYN flags and could exploit similar vulnerabilities."
+    },
+    {
+      "rank": 3,
+      "attack_type": "Attack-TCP-Flag-RST-ACK",
+      "justification": "This attack type may leverage the existing traffic patterns, particularly with the presence of ACK flags."
+    },
+    {
+      "rank": 4,
+      "attack_type": "Attack-TCP-Flag-SYN-TIME",
+      "justification": "While it involves SYN flags, its focus on timing may be less relevant given the observed flow duration."
+    },
+    {
+      "rank": 5,
+      "attack_type": "Attack-TCP-BYPass-V1",
+      "justification": "This attack type is the least relevant as it does not directly correlate with the observed SYN flag patterns or traffic characteristics."
+    }
+  ]
+}

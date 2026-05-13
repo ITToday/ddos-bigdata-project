@@ -480,34 +480,127 @@ elif page == "Recommendation System":
 
     st.markdown("## DDoS Attack Type Recommendation System")
     st.markdown(
-        "Given an observed DDoS attack on a network service, which other "
-        "attack types should the analyst prepare defences for?"
+        "Given an observed DDoS attack on a network service, the system "
+        "recommends which other attack types to prepare defences for. "
+        "Four layers: collaborative filtering, ALS, content-based "
+        "similarity, and LLM reflection (CRAG-motivated)."
     )
     st.markdown("---")
 
-    col_input, col_output = st.columns([1, 2])
+    # --- Load Part B outputs ---
+    @st.cache_data
+    def load_als_results():
+        path = os.path.join(BASE, 'als_results.json')
+        if os.path.exists(path):
+            with open(path) as f:
+                return json.load(f)
+        return {}
 
-    with col_input:
+    @st.cache_data
+    def load_eval_results():
+        path = os.path.join(BASE, 'evaluation_results.json')
+        if os.path.exists(path):
+            with open(path) as f:
+                return json.load(f)
+        return {}
+
+    als_results  = load_als_results()
+    eval_results = load_eval_results()
+
+    # --- LLM function ---
+    def build_attack_profile(query_attack, centroids_pd):
+        if query_attack not in centroids_pd.index:
+            return f"Attack type: {query_attack} (profile unavailable)"
+        row = centroids_pd.loc[query_attack]
+        feature_labels = {
+            "avg_bytes_rate"        : "Avg bytes rate",
+            "avg_packets_rate"      : "Avg packets/sec",
+            "avg_duration"          : "Avg flow duration (s)",
+            "avg_payload_bytes_mean": "Avg payload size (bytes)",
+            "avg_syn_flag_counts"   : "Avg SYN flag count",
+            "avg_ack_flag_counts"   : "Avg ACK flag count",
+            "avg_down_up_rate"      : "Down/up traffic ratio",
+            "avg_fwd_packets_rate"  : "Forward packets/sec",
+            "avg_bwd_packets_rate"  : "Backward packets/sec"
+        }
+        lines = [f"Observed attack type: {query_attack}"]
+        for col, label in feature_labels.items():
+            if col in row.index:
+                lines.append(f"  {label}: {row[col]:.4f}")
+        return "\n".join(lines)
+
+    def llm_rerank(query_attack, candidates, centroids_pd, api_key):
+        from openai import OpenAI
+        client  = OpenAI(api_key=api_key)
+        profile = build_attack_profile(query_attack, centroids_pd)
+        cand_str = "\n".join(
+            f"{i+1}. {c}" for i, c in enumerate(candidates)
+        )
+        prompt = f"""You are a cybersecurity expert specialising in DDoS attack analysis.
+
+OBSERVED ATTACK PROFILE:
+{profile}
+
+HYBRID RECOMMENDATION CANDIDATES:
+{cand_str}
+
+TASK:
+Re-rank these candidates from most to least relevant for a SOC analyst
+to prepare defences against, based on the observed traffic features.
+Consider packet rate, flow duration, flag patterns, and bytes rate.
+
+Return ONLY a JSON object, no other text:
+{{
+  "ranked_recommendations": [
+    {{"rank": 1, "attack_type": "...", "justification": "one sentence"}},
+    {{"rank": 2, "attack_type": "...", "justification": "one sentence"}},
+    {{"rank": 3, "attack_type": "...", "justification": "one sentence"}},
+    {{"rank": 4, "attack_type": "...", "justification": "one sentence"}},
+    {{"rank": 5, "attack_type": "...", "justification": "one sentence"}}
+  ]
+}}"""
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2,
+            max_tokens=600
+        )
+        raw = response.choices[0].message.content.strip()
+        try:
+            return json.loads(raw)["ranked_recommendations"]
+        except:
+            clean = raw.replace("```json","").replace("```","").strip()
+            return json.loads(clean)["ranked_recommendations"]
+
+    # --- Layout ---
+    col_left, col_right = st.columns([1, 2])
+
+    with col_left:
         st.markdown("#### Analyst Query")
 
         attack_options  = sorted(cf_sim.index.tolist())
-        service_options = sorted(matrix_pd.columns.tolist())
+        service_options = sorted(als_results.keys()) if als_results \
+            else ["Other_Service"]
 
-        observed = st.selectbox(
-            "Observed attack type",
-            attack_options
+        observed = st.selectbox("Observed attack type", attack_options)
+        service  = st.selectbox("Targeted service", service_options)
+        top_k    = st.slider("Top-K", 1, 10, 5)
+        alpha    = st.slider(
+            "CF weight (alpha)", 0.0, 1.0, 0.6, 0.1,
+            help="Weight for CF score. 1-alpha = content weight."
         )
-        service = st.selectbox(
-            "Targeted service",
-            service_options
-        )
-        top_k = st.slider("Top-K recommendations", 1, 10, 5)
-        alpha = st.slider(
-            "CF weight (alpha)",
-            0.0, 1.0, 0.6, 0.1,
-            help="Weight for collaborative filtering score. "
-                 "1 - alpha is the content-based weight."
-        )
+
+        use_llm = st.checkbox("Include LLM reflection (GPT-4o-mini)", value=True)
+
+        api_key = ""
+        if use_llm:
+            api_key = st.text_input(
+                "OpenAI API key",
+                type="password",
+                help="Key is used only for this request. Not stored."
+            )
+
+        run = st.button("Get Recommendations", type="primary")
 
         st.markdown("---")
         st.markdown("#### Traffic Profile")
@@ -516,121 +609,154 @@ elif page == "Recommendation System":
             profile = centroids.loc[observed, content_cols]
             profile_df = pd.DataFrame({
                 "Feature": [c.replace("avg_","") for c in content_cols],
-                "Value":   [round(float(v), 4) for v in profile.values]
+                "Value"  : [round(float(v), 4) for v in profile.values]
             })
-            st.dataframe(
-                profile_df,
-                use_container_width=True,
-                hide_index=True
+            st.dataframe(profile_df, use_container_width=True, hide_index=True)
+
+    with col_right:
+        if run:
+            st.markdown("#### Recommendations")
+
+            # --- CF ---
+            cf_scores = cf_sim[observed].drop(observed, errors='ignore')
+            cf_top    = cf_scores.nlargest(top_k)
+
+            # --- Content ---
+            cb_scores = cb_sim[observed].drop(observed, errors='ignore')
+            cb_top    = cb_scores.nlargest(top_k)
+
+            # --- Hybrid ---
+            common = cf_scores.index.intersection(cb_scores.index)
+            cf_n   = (cf_scores[common] - cf_scores[common].min()) / \
+                     (cf_scores[common].max() - cf_scores[common].min() + 1e-9)
+            cb_n   = (cb_scores[common] - cb_scores[common].min()) / \
+                     (cb_scores[common].max() - cb_scores[common].min() + 1e-9)
+            hybrid = (alpha * cf_n + (1-alpha) * cb_n).sort_values(
+                ascending=False
             )
 
-    with col_output:
-        st.markdown("#### Recommendations")
+            tab1, tab2, tab3, tab4, tab5 = st.tabs([
+                "Final (Hybrid)",
+                "LLM Reflection",
+                "Collaborative Filtering",
+                "Content-Based",
+                "Evaluation"
+            ])
 
-        # --- Layer 1: CF ---
-        cf_scores = cf_sim[observed].drop(observed, errors='ignore')
-        cf_top    = cf_scores.nlargest(top_k)
+            with tab1:
+                st.markdown(
+                    f"Hybrid recommendations for **{observed}** "
+                    f"(CF={alpha}, Content={round(1-alpha,1)})"
+                )
+                hybrid_df = pd.DataFrame({
+                    "Rank"         : range(1, top_k+1),
+                    "Attack Type"  : hybrid.head(top_k).index.tolist(),
+                    "Hybrid Score" : hybrid.head(top_k).values.round(4),
+                    "CF Score"     : cf_n[hybrid.head(top_k).index].round(4),
+                    "Content Score": cb_n[hybrid.head(top_k).index].round(4)
+                })
+                st.dataframe(hybrid_df, use_container_width=True,
+                             hide_index=True)
 
-        # --- Layer 3: Content-based ---
-        cb_scores = cb_sim[observed].drop(observed, errors='ignore')
-        cb_top    = cb_scores.nlargest(top_k)
-
-        # --- Layer 4: Hybrid ---
-        common = cf_scores.index.intersection(cb_scores.index)
-        cf_n   = (cf_scores[common] - cf_scores[common].min()) / \
-                 (cf_scores[common].max() - cf_scores[common].min() + 1e-9)
-        cb_n   = (cb_scores[common] - cb_scores[common].min()) / \
-                 (cb_scores[common].max() - cb_scores[common].min() + 1e-9)
-        hybrid = (alpha * cf_n + (1 - alpha) * cb_n).sort_values(
-            ascending=False
-        )
-
-        tab1, tab2, tab3, tab4 = st.tabs([
-            "Hybrid (Final)",
-            "Collaborative Filtering",
-            "Content-Based",
-            "Comparison"
-        ])
-
-        with tab1:
-            st.markdown(
-                f"**Final hybrid recommendations for {observed}**  "
-                f"(CF weight: {alpha}, Content weight: {round(1-alpha,1)})"
-            )
-            hybrid_df = pd.DataFrame({
-                "Rank":        range(1, top_k + 1),
-                "Attack Type": hybrid.head(top_k).index.tolist(),
-                "Hybrid Score": hybrid.head(top_k).values.round(4),
-                "CF Score":    cf_n[hybrid.head(top_k).index].round(4),
-                "Content Score": cb_n[hybrid.head(top_k).index].round(4)
-            })
-            st.dataframe(hybrid_df, use_container_width=True, hide_index=True)
-
-            st.markdown("**Prepare defences for:**")
-            for i, atk in enumerate(hybrid.head(top_k).index, 1):
-                st.markdown(f"{i}. {atk}")
-
-        with tab2:
-            st.markdown(
-                "**Collaborative filtering** — attack types that "
-                "co-occur with the observed attack across similar "
-                "service profiles."
-            )
-            cf_df = pd.DataFrame({
-                "Rank":        range(1, top_k + 1),
-                "Attack Type": cf_top.index.tolist(),
-                "CF Similarity": cf_top.values.round(4)
-            })
-            st.dataframe(cf_df, use_container_width=True, hide_index=True)
-
-        with tab3:
-            st.markdown(
-                "**Content-based similarity** — attack types with "
-                "similar traffic feature profiles (centroids from Part A)."
-            )
-            cb_df = pd.DataFrame({
-                "Rank":        range(1, top_k + 1),
-                "Attack Type": cb_top.index.tolist(),
-                "Feature Similarity": cb_top.values.round(4)
-            })
-            st.dataframe(cb_df, use_container_width=True, hide_index=True)
-
-        with tab4:
-            st.markdown(
-                "**Feature comparison** — observed attack vs "
-                "top hybrid recommendation."
-            )
-            if len(hybrid) > 0 and observed in centroids.index:
-                top_rec = hybrid.index[0]
-                if top_rec in centroids.index:
-                    compare = pd.DataFrame({
-                        "Feature": [
-                            c.replace("avg_","") for c in content_cols
-                        ],
-                        observed.replace("Attack-TCP-","").replace(
-                            "Attack-",""
-                        ): centroids.loc[observed, content_cols].values.round(4),
-                        top_rec.replace("Attack-TCP-","").replace(
-                            "Attack-",""
-                        ): centroids.loc[top_rec, content_cols].values.round(4)
-                    })
-                    st.dataframe(
-                        compare,
-                        use_container_width=True,
-                        hide_index=True
+            with tab2:
+                if use_llm and api_key:
+                    with st.spinner("Calling GPT-4o-mini..."):
+                        try:
+                            candidates = hybrid.head(top_k).index.tolist()
+                            llm_ranked = llm_rerank(
+                                observed, candidates, centroids, api_key
+                            )
+                            st.markdown(
+                                "GPT-4o-mini re-ranked the hybrid candidates "
+                                "using observed traffic profile reasoning "
+                                "(CRAG-motivated)."
+                            )
+                            for item in llm_ranked:
+                                st.markdown(
+                                    f"**{item['rank']}. {item['attack_type']}**"
+                                )
+                                st.markdown(
+                                    f"*{item['justification']}*"
+                                )
+                                st.markdown("---")
+                        except Exception as e:
+                            st.error(f"LLM call failed: {e}")
+                elif use_llm and not api_key:
+                    st.warning(
+                        "Enter your OpenAI API key in the left panel "
+                        "to enable LLM reflection."
                     )
-                    st.caption(
-                        "Similar values across features indicate "
-                        "content-based similarity. The hybrid score "
-                        "combines this with co-occurrence patterns."
-                    )
+                else:
+                    st.info("LLM reflection is disabled.")
 
-    st.markdown("---")
-    st.markdown("#### How This System Works")
-    st.markdown("""
-    | Layer | Method | Course Reference |
-    |---|---|---|
-    | Collaborative Filtering | Cosine similarity on service x attack co-occurrence | CF lecture, movie recommendation practical |
-    | Content-Based | Cosine similarity on Part A feature centroids | Word similarity practical |
-    | Hybrid | CF score x alpha + content score x (1-alpha) | T6 handout |
-    """)
+            with tab3:
+                st.markdown(
+                    "Attack types that co-occur with the observed attack "
+                    "across similar service profiles."
+                )
+                cf_df = pd.DataFrame({
+                    "Rank"         : range(1, top_k+1),
+                    "Attack Type"  : cf_top.index.tolist(),
+                    "CF Similarity": cf_top.values.round(4)
+                })
+                st.dataframe(cf_df, use_container_width=True, hide_index=True)
+
+            with tab4:
+                st.markdown(
+                    "Attack types with similar traffic feature profiles "
+                    "to the observed attack (centroids from Part A)."
+                )
+                cb_df = pd.DataFrame({
+                    "Rank"              : range(1, top_k+1),
+                    "Attack Type"       : cb_top.index.tolist(),
+                    "Feature Similarity": cb_top.values.round(4)
+                })
+                st.dataframe(cb_df, use_container_width=True, hide_index=True)
+
+            with tab5:
+                if eval_results:
+                    e1, e2, e3 = st.columns(3)
+                    with e1:
+                        st.metric("ALS RMSE", f"{eval_results.get('rmse', 0):.2f}")
+                    with e2:
+                        st.metric("Precision@5",
+                                  f"{eval_results.get('precision_at_5', 0):.4f}")
+                    with e3:
+                        st.metric("Recall@5",
+                                  f"{eval_results.get('recall_at_5', 0):.4f}")
+
+                    st.markdown("---")
+                    st.markdown("#### Alpha Tuning Results")
+                    alpha_data = pd.DataFrame([
+                        {"Alpha": k, "Precision@5": v}
+                        for k, v in eval_results.get(
+                            "alpha_results", {}
+                        ).items()
+                    ])
+                    if not alpha_data.empty:
+                        st.dataframe(
+                            alpha_data, use_container_width=True,
+                            hide_index=True
+                        )
+
+                    chart = os.path.join(BASE, 'evaluation.png')
+                    if os.path.exists(chart):
+                        st.image(chart, use_container_width=True)
+
+        else:
+            st.info(
+                "Select an attack type and service on the left, "
+                "then click Get Recommendations."
+            )
+
+        st.markdown("---")
+        st.markdown("#### System Architecture")
+        st.markdown("""
+        | Layer | Method | Course Reference |
+        |---|---|---|
+        | Layer 1 | Collaborative Filtering (Item-KNN) | CF lecture, movie recommendation practical |
+        | Layer 2 | ALS Matrix Factorization | CF lecture, pyspark.ml.recommendation |
+        | Layer 3 | Content-Based Similarity | Word similarity practical |
+        | Layer 4 | Hybrid Combination | T6 handout — alpha weighted |
+        | Layer 5 | LLM Reflection | CRAG (Zhu et al., WWW 2025) |
+        """)
