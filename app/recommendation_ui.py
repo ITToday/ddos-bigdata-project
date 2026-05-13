@@ -749,14 +749,13 @@ Return ONLY a JSON object, no other text:
                 "then click Get Recommendations."
             )
 
-        st.markdown("---")
-        st.markdown("#### System Architecture")
+        st.markdown("#### How the System Works")
         st.markdown("""
-        | Layer | Method | Course Reference |
+        | Layer | Method | What it does |
         |---|---|---|
-        | Layer 1 | Collaborative Filtering (Item-KNN) | CF lecture, movie recommendation practical |
-        | Layer 2 | ALS Matrix Factorization | CF lecture, pyspark.ml.recommendation |
-        | Layer 3 | Content-Based Similarity | Word similarity practical |
-        | Layer 4 | Hybrid Combination | T6 handout — alpha weighted |
-        | Layer 5 | LLM Reflection | CRAG (Zhu et al., WWW 2025) |
+        | 1 | Collaborative Filtering | Finds attack types that historically co-occur across similar network services |
+        | 2 | ALS Matrix Factorization | Learns hidden patterns between services and attack types from flow count data |
+        | 3 | Content-Based Similarity | Finds attack types with similar traffic signatures — bytes rate, packet rate, flags |
+        | 4 | Hybrid Combination | Combines co-occurrence patterns and feature similarity into one ranked list |
+        | 5 | LLM Reflection | Re-ranks candidates using traffic profile reasoning — which attacks are operationally plausible |
         """)
