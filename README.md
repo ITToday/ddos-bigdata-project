@@ -1,145 +1,117 @@
 # DDoS Big Data Analytics and Recommendation System
 
-**Student:** Benjamine  
-**Programme:** MSc Artificial Intelligence, Batch 18  
-**University:** University of Moratuwa  
-**Module:** Big Data Analytics Mini Project
+**Student:** Benjamine. S (258762A)
+**Batch:** 18
+**Programme:** MSc Artificial Intelligence
+**University:** University of Moratuwa
+**Module:** IT5612 — Big Data Analytics Mini Project
 
 ---
 
-## Project Overview
+## About This Project
 
-This project implements a complete big data analytics and recommendation system
-on the BCCC-cPacket-Cloud-DDoS-2024 dataset, using Apache Spark (PySpark) for
-all distributed data processing.
+I completed both Part A and Part B of the assignment using the
+BCCC-cPacket-Cloud-DDoS-2024 dataset — a real DDoS network traffic
+dataset published by York University and cPacket Networks in 2024.
 
-**Part A** — Big Data Analytics on 540,494 DDoS network flow records across
-319 features. Answers five analytical questions using SparkSQL, DataFrame API,
-and window functions.
+**Part A** answers five analytical questions on 540,494 network flow
+records using Apache Spark.
 
-**Part B** — DDoS attack type recommendation system. Given an observed attack
-on a network service, recommends which other attack types to prepare defences
-for. Implements four recommendation layers: collaborative filtering (Item-KNN),
-ALS matrix factorization (pyspark.ml), content-based similarity, and
-LLM reflection motivated by CRAG (Zhu et al., WWW 2025).
+**Part B** builds a recommendation system that tells a SOC analyst
+which DDoS attack types to prepare defences for, given an observed
+attack on a network service.
 
 ---
 
 ## Dataset
 
-**Name:** BCCC-cPacket-Cloud-DDoS-2024  
-**Source:** York University / cPacket Networks  
-**Access:** Kaggle — dhoogla/bccc-cpacket-cloud-ddos-2024  
-**License:** CC-BY-SA-4.0  
-**Size:** 540,494 flows × 319 features  
-**Format:** Parquet (29.5 MB compressed)
+**Name:** BCCC-cPacket-Cloud-DDoS-2024
+**Source:** York University / cPacket Networks
+**Link:** https://www.kaggle.com/datasets/dhoogla/bccc-cpacket-cloud-ddos-2024
+**License:** CC-BY-SA-4.0
+**Size:** 540,494 flows, 319 features per flow
 
-The dataset is not committed to this repository. It is downloaded automatically
-by the notebooks via the Kaggle API on first run.
+The dataset is not in this repository. The Part A notebook downloads
+it automatically using the Kaggle API when you run it for the first time.
 
 ---
 
-## Environment Setup
+## What Is in This Repository
 
-### Prerequisites
+
+---
+
+## How to Run
+
+### Requirements
+
 - Python 3.9 or higher
-- Java 17 (required by PySpark)
+- Java 17
 - Git
 
-### Installation
+### Setup
 
-Clone the repository and set up the virtual environment:
+```bash
+git clone https://github.com/ITToday/ddos-bigdata-project
+cd ddos-bigdata-project
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+export JAVA_HOME=$(brew --prefix openjdk@17)
+```
 
-    git clone https://github.com/your-username/ddos-bigdata-project
-    cd ddos-bigdata-project
-    python3 -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
-    export JAVA_HOME=$(brew --prefix openjdk@17)
+### API Keys
 
-### Kaggle API Setup
+You need two API keys before running the notebooks.
 
-1. Go to kaggle.com → Settings → API → Create New Token
-2. Set as environment variable: export KAGGLE_TOKEN=your_token_here
+**Kaggle** — to download the dataset:
+Go to kaggle.com → Settings → API → Create New Token
 
-### OpenAI API Setup
+**OpenAI** — for the LLM layer in Part B:
+Go to platform.openai.com → API Keys
 
-    export OPENAI_API_KEY=your_key_here
+```bash
+export KAGGLE_TOKEN=your_token_here
+export OPENAI_API_KEY=your_key_here
+```
 
----
+### Running Part A
 
-## Running the Notebooks
+```bash
+jupyter notebook
+```
 
-### Option 1 — Jupyter in browser
+Open `notebooks/part_a_analytics.ipynb` and run all cells from top
+to bottom. It will download the dataset, run the analysis, and save
+all charts and results to the `outputs/` folder.
 
-    jupyter notebook
+### Running Part B
 
-Open notebooks/part_a_analytics.ipynb then notebooks/part_b_recommendation.ipynb.
-Run all cells top to bottom in each notebook.
+Open `notebooks/part_b_recommendation.ipynb` and run all cells from
+top to bottom. It loads the Part A outputs and builds the recommendation
+system.
 
-### Option 2 — VS Code
+### Running the Streamlit UI
 
-Open VS Code in the project folder. Select the venv kernel.
-Open and run each notebook using the VS Code Jupyter extension.
+```bash
+streamlit run app/recommendation_ui.py
+```
 
-### Option 3 — Google Colab (original execution environment)
+Opens at http://localhost:8501. No Spark needed here — it reads the
+precomputed results from the `outputs/` folder.
 
-Upload notebooks to Colab. Add KAGGLE_TOKEN and OPENAI_API_KEY to Colab Secrets.
-Run all cells top to bottom.
+### Running on Google Colab
 
-### Option 4 — Streamlit UI
-
-    streamlit run app/recommendation_ui.py
-
-Opens at http://localhost:8501
-
----
-
-## Project Structure
-
-    ddos-bigdata-project/
-    ├── notebooks/
-    │   ├── part_a_analytics.ipynb
-    │   └── part_b_recommendation.ipynb
-    ├── app/
-    │   └── recommendation_ui.py
-    ├── outputs/
-    ├── data/
-    ├── requirements.txt
-    ├── .gitignore
-    └── README.md
-
----
-
-## Techniques Used
-
-### Part A
-
-SparkSQL and DataFrame API on 540,494 network flows:
-- Parquet loading with schema preservation
-- Null audit across 319 columns
-- Window functions: RANK() OVER, SUM() OVER()
-- GroupBy aggregation with programmatic expression building
-- CASE WHEN port mapping
-- TCP flag heatmap normalisation
-- Feature discrimination ratio analysis
-
-### Part B
-
-Recommendation system layers:
-- Item-KNN collaborative filtering (cosine similarity on co-occurrence matrix)
-- ALS matrix factorization via pyspark.ml.recommendation
-- Content-based similarity (cosine similarity on Part A feature centroids)
-- Hybrid weighted combination (CF + content)
-- LLM reflection motivated by CRAG (Zhu et al., WWW 2025)
-- Evaluation: Precision@K, Recall@K, RMSE
+Upload both notebooks to Colab. Add KAGGLE_TOKEN and OPENAI_API_KEY
+to Colab Secrets using the key icon in the left sidebar. Run all cells
+from top to bottom.
 
 ---
 
 ## References
 
-Zhu, Y. et al. (2025). Collaborative Retrieval for Large Language Model-based
-Conversational Recommender Systems. WWW 2025.
+Zhu, Y. et al. (2025). Collaborative Retrieval for Large Language
+Model-based Conversational Recommender Systems. WWW 2025, Sydney.
 
-York University / cPacket Networks (2024). BCCC-cPacket-Cloud-DDoS-2024 Dataset.
-Kaggle. https://www.kaggle.com/datasets/dhoogla/bccc-cpacket-cloud-ddos-2024
+York University / cPacket Networks (2024). BCCC-cPacket-Cloud-DDoS-2024.
+https://www.kaggle.com/datasets/dhoogla/bccc-cpacket-cloud-ddos-2024
